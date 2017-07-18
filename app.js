@@ -48,7 +48,7 @@ const authCheck = jwt({
 });
 
 app.use(function (req, res, next) {
-    req.db = mongoose;
+    req.db = db;
     next();
     db.close();
 });
