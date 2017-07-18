@@ -61,7 +61,6 @@ router.post('/add', function (req, res, next) {
         email: '',
         profile_picture: ''
     };
-
 });
 
 router.get('/search', function (req, res, next) {

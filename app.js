@@ -5,7 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongo = require('mongoskin');
-
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 const cors = require('cors');
@@ -49,7 +48,7 @@ const authCheck = jwt({
 });
 
 app.use(function (req, res, next) {
-    req.db = db;
+    req.db = mongoose;
     next();
     db.close();
 });
