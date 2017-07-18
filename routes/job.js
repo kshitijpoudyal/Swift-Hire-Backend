@@ -6,7 +6,8 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/add', function (req, res, next) {
-    res.json({status: 'success'});
+    var db = req.db;
+
 });
 
 router.get('/search', function (req, res, next) {

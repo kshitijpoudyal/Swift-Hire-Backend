@@ -15,7 +15,6 @@
     "jade": "~1.11.0",
     "jwks-rsa": "^1.2.0",
     "mongodb": "^2.2.30",
-    "mongoose": "^4.11.3",
     "mongoskin": "^2.1.0",
     "morgan": "~1.8.1",
     "serve-favicon": "~2.4.2"
