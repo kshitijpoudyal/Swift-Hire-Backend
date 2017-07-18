@@ -5,7 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongo = require('mongoskin');
-var fs = require('fs');
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 const cors = require('cors');
@@ -14,6 +13,8 @@ var index = require('./routes/index');
 var job = require('./routes/job');
 
 var db = mongo.db('mongodb://swifthire:swifthire123@ds043262.mlab.com:43262/swifthire');
+db.bind('jobs');
+db.bind('users');
 // bind collections here...
 
 var app = express();
