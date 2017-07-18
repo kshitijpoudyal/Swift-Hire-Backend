@@ -54,8 +54,11 @@ app.use(function (req, res, next) {
     db.close();
 });
 
-app.use('/', authCheck, index);
-app.use('/job', authCheck, job);
+// app.use('/', authCheck, index);
+// app.use('/job', authCheck, job);
+
+app.use('/', index);
+app.use('/job', job);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
