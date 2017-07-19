@@ -11,6 +11,7 @@ const cors = require('cors');
 
 var index = require('./routes/index');
 var job = require('./routes/job');
+var user = require('./routes/user');
 
 var db = mongo.db('mongodb://swifthire:swifthire123@ds043262.mlab.com:43262/swifthire');
 db.bind('jobs');
@@ -57,6 +58,7 @@ app.use(function (req, res, next) {
 
 app.use('/', index);
 app.use('/job', job);
+app.use('/user', user);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -77,7 +79,5 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(8080);
-
 db.close();
-
 module.exports = app;
