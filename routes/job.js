@@ -104,8 +104,6 @@ router.get('/list', function (req, res, next) {
     });
 });
 
-<<<<<<< HEAD
-=======
 router.get('/list/postedjobs/:id', function (req, res, next) {
     let today = new Date().toISOString();
     req.db.jobs.find({
@@ -124,7 +122,6 @@ router.get('/list/postedjobs/:id', function (req, res, next) {
             });
         }
     });
->>>>>>> 2ac286b3a765d13f8199d8a799d84b087896ad9e
 });
 
 module.exports = router;
