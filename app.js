@@ -77,12 +77,5 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(8080);
-<<<<<<< HEAD
 db.close();
 module.exports = app;
-=======
-
-db.close();
-
-module.exports = app;
->>>>>>> 5c0f1a7d0c73c7d41b69c6b11d5283adf79c6d2a
