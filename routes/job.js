@@ -104,29 +104,26 @@ router.get('/list', function (req, res, next) {
     });
 });
 
-<<<<<<< HEAD
-    req.db.jobs.find().toArray(function (err,data) {
-        console.log(data);
-=======
-router.get('/list/postedjobs/:id', function (req, res, next) {
-    let today = new Date().toISOString();
-    req.db.jobs.find({
-        'posted_by._id': req.params.id,
-        'preferred_date': {$gte: today}
-    }).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
->>>>>>> 2ac286b3a765d13f8199d8a799d84b087896ad9e
-        if (err) {
-            res.json({
-                status: 'failed',
-                message: 'Oops, something went wrong!'
-            });
-        } else {
-            res.json({
-                status: 'success',
-                jobs: data
-            });
-        }
+req.db.jobs.find().toArray(function (err, data) {
+    console.log(data);
+    router.get('/list/postedjobs/:id', function (req, res, next) {
+        let today = new Date().toISOString();
+        req.db.jobs.find({
+            'posted_by._id': req.params.id,
+            'preferred_date': {$gte: today}
+        }).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
+            if (err) {
+                res.json({
+                    status: 'failed',
+                    message: 'Oops, something went wrong!'
+                });
+            } else {
+                res.json({
+                    status: 'success',
+                    jobs: data
+                });
+            }
+        });
     });
-});
 
-module.exports = router;
+    module.exports = router;
