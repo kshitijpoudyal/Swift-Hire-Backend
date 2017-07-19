@@ -100,7 +100,7 @@ router.get('/list', function (req, res, next) {
     let today = new Date().toISOString();
     req.db.jobs.find({
         'preferred_date': {$gte: today}
-    }).sort({preferred_date: 1}).imit(10).toArray(function (err, data) {
+    }).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',

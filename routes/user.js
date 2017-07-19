@@ -5,9 +5,10 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
 
-router.get('/job-history', function (req, res, next) {
-    let today = new Date().toISOString();
-    req.db.users.find({}).toArray(function (err, data) {
+router.get('/profile/posted-jobs/:id', function (req, res, next) {
+    let id = req.params.id;
+
+    req.db.users.findOne({_id:id},{jobs_posted:1},function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',
@@ -16,8 +17,26 @@ router.get('/job-history', function (req, res, next) {
         } else {
             res.json({
                 status: 'success',
-                user_jobs_applyed: data,
-                user_jobs_posted: data.jobs_posted
+                jobs: data
+            });
+        }
+    });
+
+});
+
+router.get('/profile/applied-jobs/:id', function (req, res, next) {
+    let id = req.params.id;
+
+    req.db.users.findOne({_id:id},{jobs_applied:1},function (err, data) {
+        if (err) {
+            res.json({
+                status: 'failed',
+                message: 'Oops, something went wrong!'
+            });
+        } else {
+            res.json({
+                status: 'success',
+                jobs: data
             });
         }
     });
