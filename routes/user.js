@@ -15,7 +15,7 @@ router.get('/job-history', function (req, res, next) {
         } else {
             res.json({
                 status: 'success',
-                user_jobs_applyed: data.jobs_applied,
+                user_jobs_applyed: data,
                 user_jobs_posted: data.jobs_posted
             });
         }
