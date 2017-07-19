@@ -50,7 +50,6 @@ const authCheck = jwt({
 app.use(function (req, res, next) {
     req.db = db;
     next();
-    db.close();
 });
 
 // app.use('/', authCheck, index);
@@ -78,5 +77,7 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(8080);
+
+db.close();
 
 module.exports = app;
