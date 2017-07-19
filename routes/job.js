@@ -72,4 +72,59 @@ router.get('/search', function (req, res, next) {
     });
 });
 
+
+router.get('/list',function (req,res,next) {
+    let filterDate = {
+        preferred_date:{$gte:new Date()}
+    }
+
+    req.db.jobs.find({}).toArray(function (err,data) {
+        console.log(data);
+        if (err) {
+            res.json({
+                status: 'failed',
+                message: 'Oops, something went wrong!'
+            });
+        } else {
+            res.json({
+                status: 'success',
+                jobs: data
+            });
+        }
+    });
+
+    // post = [{
+    //     title: 'job title',
+    //     description: 'description',
+    //     category: 'plumber',
+    //     location: {
+    //         address: 'fairfield',
+    //         coors: [1231,23123]
+    //     },
+    //     hourly_rate: '20',
+    //     preferred_date: '17/08/2017',
+    //     preferred_time: '12:00',
+    //     posted_by: {user:'username'},
+    //     applied_by: [{user:'one'},{user:'two'}],
+    //     status: 'Ongoing' // Ongoing, Completed, Pending
+    // },
+    //     {
+    //         title: 'job title',
+    //         description: 'description',
+    //         category: 'plumber',
+    //         location: {
+    //             address: 'fairfield',
+    //             coors: [1231,23123]
+    //         },
+    //         hourly_rate: '20',
+    //         preferred_date: '17/08/2017',
+    //         preferred_time: '12:00',
+    //         posted_by: {user:'username'},
+    //         applied_by: [{user:'one'},{user:'two'}],
+    //         status: 'Ongoing' // Ongoing, Completed, Pending
+    //     }];
+    //res.json(post);
+
+});
+
 module.exports = router;
