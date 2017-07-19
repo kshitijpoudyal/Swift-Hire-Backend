@@ -16,7 +16,7 @@ router.post('/add', function (req, res, next) {
 
     let id = userInfo._id;
 
-    db.users.findOne({_id: id}, function (err, dbUser) {
+    db.users.findOne({ _id: id }, function (err, dbUser) {
         if (!err) {
             if (dbUser) {
                 jobInfo._id = dbUser._id + (dbUser.jobs_posted.length + 1);
@@ -31,7 +31,7 @@ router.post('/add', function (req, res, next) {
 
                 db.jobs.save(jobInfo);
                 db.users.save(dbUser);
-              
+
                 res.json({
                     status: 'success',
                     job: jobInfo
@@ -63,20 +63,20 @@ router.get('/search', function (req, res, next) {
 
     req.db.jobs.find({
         $and: [
-            {'preferred_date': {$gte: today}},
-            {'category': {$regex: searchParams.category, $options: 'i'}},
-            {'location.address': {$regex: searchParams.location, $options: 'i'}},
-            {'hourly_rate': {$gte: searchParams.minFees}},
+            { 'preferred_date': { $gte: today } },
+            { 'category': { $regex: searchParams.category, $options: 'i' } },
+            { 'location.address': { $regex: searchParams.location, $options: 'i' } },
+            { 'hourly_rate': { $gte: searchParams.minFees } },
             {
                 $or: [{
                     'title': {
                         $regex: searchParams.searchQuery,
                         $options: 'i'
                     }
-                }, {'description': {$regex: searchParams.searchQuery, $options: 'i'}}]
+                }, { 'description': { $regex: searchParams.searchQuery, $options: 'i' } }]
             }
         ]
-    }).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
+    }).sort({ preferred_date: 1 }).limit(10).toArray(function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',
@@ -92,15 +92,48 @@ router.get('/search', function (req, res, next) {
 });
 
 router.post('/apply', function (req, res, next) {
-    res.json(req.body);
+    let db = req.db;
+    let jobInfo = new Job(req.body.jobInfo);
+    let user = new User(req.body.userInfo);
+    let id = user._id;
+    let jobId = jobInfo._id;
+    db.users.findOne({
+        '_id': id
+    }, function (err, usersFound) {
+        if (err) console.error(err);
+        if (usersFound) {
+            usersFound.jobs_applied.push(
+                {
+                    job_id: jobInfo._id,
+                    title: jobInfo.title,
+                    feedback: '',
+                    rating: -1,
+                    preferred_date: jobInfo.preferred_date
+                }
+            );
+            jobInfo.applied_by.push(usersFound);
+            db.jobs.save(jobInfo);
+            db.users.save(usersFound);
+            res.json({
+                status: "Successfully applied for this job",
+                jobsInfo: jobInfo,
+                user: usersFound
+            })
+
+        }
+        else {
+
+        }
+    });
+
 
 });
 
 router.get('/list', function (req, res, next) {
     let today = new Date().toISOString();
     req.db.jobs.find({
-        'preferred_date': {$gte: today}
-    }).sort({preferred_date: 1}).imit(10).toArray(function (err, data) {
+        'preferred_date': { $gte: today }
+    }).sort({ preferred_date: 1 }).limit(10).toArray(function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',
@@ -119,8 +152,8 @@ router.get('/list/postedjobs/:id', function (req, res, next) {
     let today = new Date().toISOString();
     req.db.jobs.find({
         'posted_by._id': req.params.id,
-        'preferred_date': {$gte: today}
-    }).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
+        'preferred_date': { $gte: today }
+    }).sort({ preferred_date: 1 }).limit(10).toArray(function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',
