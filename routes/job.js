@@ -85,7 +85,7 @@ router.get('/list',function (req,res,next) {
         preferred_date:{$gte:new Date()}
     }
 
-    req.db.jobs.find({}).toArray(function (err,data) {
+    req.db.jobs.find().toArray(function (err,data) {
         console.log(data);
         if (err) {
             res.json({
