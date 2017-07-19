@@ -74,4 +74,30 @@ router.get('/search', function (req, res, next) {
     });
 });
 
+router.post('/apply',function(req,res,next){
+    res.json(req.body);
+    
+}
+
+router.get('/list',function (req,res,next) {
+    let filterDate = {
+        preferred_date:{$gte:new Date()}
+    }
+
+    req.db.jobs.find({}).toArray(function (err,data) {
+        console.log(data);
+        if (err) {
+            res.json({
+                status: 'failed',
+                message: 'Oops, something went wrong!'
+            });
+        } else {
+            res.json({
+                status: 'success',
+                jobs: data
+            });
+        }
+    });
+});
+
 module.exports = router;
