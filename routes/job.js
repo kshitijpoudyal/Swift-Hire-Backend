@@ -96,38 +96,6 @@ router.get('/list',function (req,res,next) {
         }
     });
 
-    // post = [{
-    //     title: 'job title',
-    //     description: 'description',
-    //     category: 'plumber',
-    //     location: {
-    //         address: 'fairfield',
-    //         coors: [1231,23123]
-    //     },
-    //     hourly_rate: '20',
-    //     preferred_date: '17/08/2017',
-    //     preferred_time: '12:00',
-    //     posted_by: {user:'username'},
-    //     applied_by: [{user:'one'},{user:'two'}],
-    //     status: 'Ongoing' // Ongoing, Completed, Pending
-    // },
-    //     {
-    //         title: 'job title',
-    //         description: 'description',
-    //         category: 'plumber',
-    //         location: {
-    //             address: 'fairfield',
-    //             coors: [1231,23123]
-    //         },
-    //         hourly_rate: '20',
-    //         preferred_date: '17/08/2017',
-    //         preferred_time: '12:00',
-    //         posted_by: {user:'username'},
-    //         applied_by: [{user:'one'},{user:'two'}],
-    //         status: 'Ongoing' // Ongoing, Completed, Pending
-    //     }];
-    //res.json(post);
-
 });
 
 module.exports = router;
