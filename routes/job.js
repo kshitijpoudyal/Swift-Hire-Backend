@@ -78,7 +78,7 @@ router.get('/search', function (req, res, next) {
 router.post('/apply',function(req,res,next){
     res.json(req.body);
     
-}
+});
 
 router.get('/list',function (req,res,next) {
     let filterDate = {
