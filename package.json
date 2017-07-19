@@ -17,6 +17,7 @@
     "mongodb": "^2.2.30",
     "mongoskin": "^2.1.0",
     "morgan": "~1.8.1",
+    "node-fetch": "^1.7.1",
     "serve-favicon": "~2.4.2"
   }
 }
