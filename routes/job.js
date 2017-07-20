@@ -175,7 +175,9 @@ router.post('/apply', function (req, res, next) {
 
         }
         else {
-
+            res.json({
+                status: "User not found"
+            })
         }
     });
 
@@ -205,25 +207,36 @@ router.get('/list/:id', function (req, res, next) {
         }
     });
 });
-//
-// router.get('/list/postedjobs/:id', function (req, res, next) {
-//     let today = new Date().toISOString();
-//     req.db.jobs.find({
-//         'posted_by._id': req.params.id,
-//         'preferred_date': {$gte: today}
-//     }).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
-//         if (err) {
-//             res.json({
-//                 status: 'failed',
-//                 message: 'Oops, something went wrong!'
-//             });
-//         } else {
-//             res.json({
-//                 status: 'success',
-//                 jobs: data
-//             });
-//         }
-//     });
-// });
+router.post('/comment', function (req, res, next) {
+    let db = req.db;
+    let job = req.body.jobId;
+    let employeeId = req.body.uId;
+    req.db.users.findOne({ _id: employeeId }, function (err, userData) {
+        if (err) {
+            res.json({
+                status: "OOPsss Something went wrong!!!"
+            })
+        }
+        for (let dd of userData.jobs_posted) {
+            if (dd.job_id == job) {
+                dd.job_id.feedback = req.body.feedback;
+                dd.job_id.rating = req.body.rating;
+                db.users.save(userData);
+                res.json({
+                    status: "Done",
+                    data: dd.job_id.feedback,
+                    rating: dd.rating.rating
+                })
+            }
+            else {
+                res.json({
+                    status: "No Comment possible"
+                })
+            }
+        }
+
+    });
+
+})
 
 module.exports = router;
