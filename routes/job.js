@@ -92,9 +92,9 @@ router.get('/search/:id', function (req, res, next) {
                     }
                 }, {'description': {$regex: searchParams.searchQuery, $options: 'i'}}]
             },
-            {'status': 'pending'},
-            {'posted_by._id': {$ne: req.params.id}},
-            {'applied_by': {$not: {$elemMatch: {'_id': req.params.id}}}}
+            { 'status': 'pending' },
+            { 'posted_by._id': { $ne: req.params.id } },
+            { 'applied_by': { $not: { $elemMatch: { '_id': req.params.id } } } }
         ]
     };
 
