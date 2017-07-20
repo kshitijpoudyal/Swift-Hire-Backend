@@ -9,7 +9,7 @@ var Job = require('../models/Job');
 router.get('/profile/posted-jobs/:id', function (req, res, next) {
     let id = req.params.id;
 
-    req.db.users.findOne({_id: id}, {jobs_posted: 1}, function (err, data) {
+    req.db.users.findOne({ _id: id }, { jobs_posted: 1 }, function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',
@@ -46,7 +46,7 @@ router.get('/profile/posted-jobs/jobs/:id', function (req, res, next) {
 router.get('/profile/applied-jobs/:id', function (req, res, next) {
     let id = req.params.id;
 
-    req.db.users.findOne({_id: id}, {jobs_applied: 1}, function (err, data) {
+    req.db.users.findOne({ _id: id }, { jobs_applied: 1 }, function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',
@@ -82,7 +82,7 @@ router.get('/profile/applied-jobs/jobs/:id', function (req, res, next) {
 router.post('/add', function (req, res, next) {
     let userInfo = new User(req.body.userInfo);
 
-    req.db.users.findOne({_id: userInfo._id}, function (err, dbUser) {
+    req.db.users.findOne({ _id: userInfo._id }, function (err, dbUser) {
         if (!err && !dbUser) {
             req.db.users.save(userInfo);
         }
@@ -93,7 +93,7 @@ router.post('/comment', function (req, res, next) {
     let db = req.db;
     let job = req.body.jobId;
     let employeeId = req.body.uId;
-    req.db.users.findOne({_id: employeeId}, function (err, userData) {
+    req.db.users.findOne({ _id: employeeId }, function (err, userData) {
         if (err) {
             res.json({
                 status: "OOPsss Something went wrong!!!"
@@ -117,6 +117,7 @@ router.post('/comment', function (req, res, next) {
 });
 
 
+
 router.post('/commentPosted', function (req, res, next) {
     let db = req.db;
     let job = req.body.jobId;
@@ -137,16 +138,12 @@ router.post('/commentPosted', function (req, res, next) {
                     data: userData.jobs_applied[dd].feedback,
                     rating: userData.jobs_applied[dd].rating
                 })
-                break;
             }
-            else {
-                res.json({
-                    status: "No Comment possible",
-                    data: userData.jobs_applied[dd]
-                })
-            }
+            
         }
+      
     });
+});
 
 router.post('/approve', function (req, res, next) {
     let userInfo = new User(req.body.userInfo);
