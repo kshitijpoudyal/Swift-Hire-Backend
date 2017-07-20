@@ -8,9 +8,7 @@ var Job = require('../models/Job');
 
 // api to add new job post
 router.post('/add', function (req, res, next) {
-
     let db = req.db;
-
     let jobInfo = new Job(req.body.jobInfo);
     let userInfo = new User(req.body.userInfo);
 
