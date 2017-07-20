@@ -121,7 +121,7 @@ router.post('/commentPosted', function (req, res, next) {
     let db = req.db;
     let job = req.body.jobId;
     let employerId = req.body.empId;
-    req.db.users.findOne({ _id: employerId }, function (err, userData) {
+    req.db.users.findOne({_id: employerId}, function (err, userData) {
         if (err) {
             res.json({
                 status: "OOPsss Something went wrong!!!"
@@ -137,16 +137,10 @@ router.post('/commentPosted', function (req, res, next) {
                     data: userData.jobs_applied[dd].feedback,
                     rating: userData.jobs_applied[dd].rating
                 })
-                break;
-            }
-            else {
-                res.json({
-                    status: "No Comment possible",
-                    data: userData.jobs_applied[dd]
-                })
             }
         }
     });
+});
 
 router.post('/approve', function (req, res, next) {
     let userInfo = new User(req.body.userInfo);
