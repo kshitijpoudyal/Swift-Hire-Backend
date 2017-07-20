@@ -8,7 +8,7 @@ var User = require('../models/User');
 var Job = require('../models/Job');
 
 let sendSearchResult = function (req, res, searchQuery) {
-    req.db.jobs.find(searchQuery).sort({ preferred_date: 1 }).limit(10).toArray(function (err, data) {
+    req.db.jobs.find(searchQuery).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',
@@ -31,7 +31,7 @@ router.post('/add', function (req, res, next) {
 
     let id = userInfo._id;
 
-    db.users.findOne({ _id: id }, function (err, dbUser) {
+    db.users.findOne({_id: id}, function (err, dbUser) {
         if (!err) {
             if (dbUser) {
                 jobInfo._id = dbUser._id + (dbUser.jobs_posted.length + 1);
@@ -81,20 +81,20 @@ router.get('/search/:id', function (req, res, next) {
 
     searchQuery = {
         $and: [
-            { 'preferred_date': { $gte: today } },
-            { 'category': { $regex: searchParams.category, $options: 'i' } },
-            { 'hourly_rate': { $gte: searchParams.minFees } },
+            {'preferred_date': {$gte: today}},
+            {'category': {$regex: searchParams.category, $options: 'i'}},
+            {'hourly_rate': {$gte: searchParams.minFees}},
             {
                 $or: [{
                     'title': {
                         $regex: searchParams.searchQuery,
                         $options: 'i'
                     }
-                }, { 'description': { $regex: searchParams.searchQuery, $options: 'i' } }]
+                }, {'description': {$regex: searchParams.searchQuery, $options: 'i'}}]
             },
-            { 'status': 'pending' },
-            { 'posted_by._id': { $ne: req.params.id } },
-            { 'applied_by': { $not: { $elemMatch: { '_id': req.params.id } } } }
+            {'status': 'pending'},
+            {'posted_by._id': {$ne: req.params.id}},
+            {'applied_by': {$not: {$elemMatch: {'_id': req.params.id}}}}
         ]
     };
 
@@ -103,8 +103,8 @@ router.get('/search/:id', function (req, res, next) {
             if (data.status === 'OK') {
                 searchQuery = {
                     $and: [
-                        { 'preferred_date': { $gte: today } },
-                        { 'category': { $regex: searchParams.category, $options: 'i' } },
+                        {'preferred_date': {$gte: today}},
+                        {'category': {$regex: searchParams.category, $options: 'i'}},
                         {
                             "location.coords": {
                                 $near: {
@@ -115,18 +115,18 @@ router.get('/search/:id', function (req, res, next) {
                                 }
                             }
                         },
-                        { 'hourly_rate': { $gte: searchParams.minFees } },
+                        {'hourly_rate': {$gte: searchParams.minFees}},
                         {
                             $or: [{
                                 'title': {
                                     $regex: searchParams.searchQuery,
                                     $options: 'i'
                                 }
-                            }, { 'description': { $regex: searchParams.searchQuery, $options: 'i' } }]
+                            }, {'description': {$regex: searchParams.searchQuery, $options: 'i'}}]
                         },
-                        { 'status': 'pending' },
-                        { 'posted_by._id': { $ne: req.params.id } },
-                        { 'applied_by': { $not: { $elemMatch: { '_id': req.params.id } } } }
+                        {'status': 'pending'},
+                        {'posted_by._id': {$ne: req.params.id}},
+                        {'applied_by': {$not: {$elemMatch: {'_id': req.params.id}}}}
                     ]
                 }
             }
@@ -147,7 +147,6 @@ router.post('/apply', function (req, res, next) {
     let jobInfo = new Job(req.body.jobInfo);
     let user = new User(req.body.userInfo);
     let id = user._id;
-    let jobId = jobInfo._id;
     db.users.findOne({
         '_id': id
     }, function (err, usersFound) {
@@ -188,11 +187,11 @@ router.get('/list/:id', function (req, res, next) {
     todayDate.setDate(todayDate.getDate() - 1);
     let today = todayDate.toISOString();
     req.db.jobs.find({
-        'preferred_date': { $gte: today },
+        'preferred_date': {$gte: today},
         'status': 'pending',
-        'posted_by._id': { $ne: req.params.id },
-        'applied_by': { $not: { $elemMatch: { '_id': req.params.id } } }
-    }).sort({ preferred_date: 1 }).limit(10).toArray(function (err, data) {
+        'posted_by._id': {$ne: req.params.id},
+        'applied_by': {$not: {$elemMatch: {'_id': req.params.id}}}
+    }).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',
@@ -245,7 +244,7 @@ router.post('/commentPosted', function (req, res, next) {
     let db = req.db;
     let job = req.body.jobId;
     let employerId = req.body.uId;
-    req.db.users.findOne({ _id: employerId }, function (err, userData) {
+    req.db.users.findOne({_id: employerId}, function (err, userData) {
         if (err) {
             res.json({
                 status: "OOPsss Something went wrong!!!"
@@ -273,4 +272,23 @@ router.post('/commentPosted', function (req, res, next) {
     });
 
 });
+
+router.get('/close/:id', function (req, res, next) {
+    let id = req.params.id;
+
+    req.db.jobs.update({_id: id}, {$set: {status: 'completed'}}, function (err, data) {
+        if (!err) {
+            res.json({
+                status: 'success',
+                job: 'Job has been successfully closed!'
+            });
+        } else {
+            res.json({
+                status: 'failed',
+                message: 'Unable to close job!'
+            });
+        }
+    });
+});
+
 module.exports = router;
