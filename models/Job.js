@@ -15,6 +15,7 @@ module.exports = class Job {
         this.location = job.location;
         this.posted_by = job.posted_by;
         this.applied_by = job.applied_by;
+        this.approved_user = job.approved_user;
         this.status = job.status;
     }
 };
