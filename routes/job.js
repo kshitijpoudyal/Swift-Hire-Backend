@@ -161,7 +161,8 @@ router.post('/apply', function (req, res, next) {
                     title: jobInfo.title,
                     feedback: '',
                     rating: -1,
-                    preferred_date: jobInfo.preferred_date
+                    preferred_date: jobInfo.preferred_date,
+                    granted: false
                 }
             );
             jobInfo.applied_by.push(usersFound);
@@ -211,7 +212,7 @@ router.post('/comment', function (req, res, next) {
     let db = req.db;
     let job = req.body.jobId;
     let employeeId = req.body.uId;
-    req.db.users.findOne({ _id: employeeId }, function (err, userData) {
+    req.db.users.findOne({_id: employeeId}, function (err, userData) {
         if (err) {
             res.json({
                 status: "OOPsss Something went wrong!!!"
