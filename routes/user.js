@@ -88,4 +88,72 @@ router.post('/add', function (req, res, next) {
     });
 });
 
+router.post('/comment', function (req, res, next) {
+    let db = req.db;
+    let job = req.body.jobId;
+    let employeeId = req.body.uId;
+    req.db.users.findOne({_id: employeeId}, function (err, userData) {
+        if (err) {
+            res.json({
+                status: "OOPsss Something went wrong!!!"
+            })
+        }
+        for (let dd in userData.jobs_posted) {
+            if (userData.jobs_posted[dd].job_id == job) {
+                userData.jobs_posted[dd].feedback = req.body.feedback;
+                userData.jobs_posted[dd].rating = req.body.rating;
+                db.users.save(userData);
+                res.json({
+                    status: "Done",
+                    data: userData.jobs_posted[dd].feedback,
+                    rating: userData.jobs_posted[dd].rating
+                })
+                break;
+            }
+            else {
+                res.json({
+                    status: "No Comment possible",
+                    data: userData.jobs_posted[dd]
+                })
+            }
+        }
+
+    });
+
+});
+
+
+router.post('/commentPosted', function (req, res, next) {
+    let db = req.db;
+    let job = req.body.jobId;
+    let employerId = req.body.empId;
+    req.db.users.findOne({ _id: employerId }, function (err, userData) {
+        if (err) {
+            res.json({
+                status: "OOPsss Something went wrong!!!"
+            })
+        }
+        for (let dd in userData.jobs_applied) {
+            if (userData.jobs_applied[dd].job_id == job) {
+                userData.jobs_applied[dd].feedback = req.body.feedback;
+                userData.jobs_applied[dd].rating = req.body.rating;
+                db.users.save(userData);
+                res.json({
+                    status: "Done",
+                    data: userData.jobs_applied[dd].feedback,
+                    rating: userData.jobs_applied[dd].rating
+                })
+                break;
+            }
+            else {
+                res.json({
+                    status: "No Comment possible",
+                    data: userData.jobs_applied[dd]
+                })
+            }
+        }
+    });
+
+});
+
 module.exports = router;
