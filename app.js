@@ -56,9 +56,9 @@ app.use(function (req, res, next) {
 // app.use('/', authCheck, index);
 // app.use('/job', authCheck, job);
 
-app.use('/', index);
-app.use('/job', job);
-app.use('/user', user);
+app.use('/', authCheck, index);
+app.use('/job', authCheck, job);
+app.use('/user', authCheck, user);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
