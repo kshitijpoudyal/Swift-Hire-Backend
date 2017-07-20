@@ -122,7 +122,9 @@ router.post('/apply', function (req, res, next) {
 
         }
         else {
-
+            res.json({
+                status: "User not found"
+            })
         }
     });
 
@@ -167,5 +169,36 @@ router.get('/list/postedjobs/:id', function (req, res, next) {
         }
     });
 });
+router.post('/comment', function (req, res, next) {
+    let db = req.db;
+    let job = req.body.jobId;
+    let employeeId = req.body.uId;
+    req.db.users.findOne({ _id: employeeId }, function (err, userData) {
+        if (err) {
+            res.json({
+                status: "OOPsss Something went wrong!!!"
+            })
+        }
+        for (let dd of userData.jobs_posted) {
+            if (dd.job_id == job) {
+                dd.job_id.feedback = req.body.feedback;
+                dd.job_id.rating = req.body.rating;
+                db.users.save(userData);
+                res.json({
+                    status: "Done",
+                    data: dd.job_id.feedback,
+                    rating: dd.rating.rating
+                })
+            }
+            else {
+                res.json({
+                    status: "No Comment possible"
+                })
+            }
+        }
+
+    });
+
+})
 
 module.exports = router;
