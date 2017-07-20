@@ -68,7 +68,7 @@ router.post('/add', function (req, res, next) {
     });
 });
 
-router.get('/search', function (req, res, next) {
+router.get('/search/:id', function (req, res, next) {
     let searchParams = {
         searchQuery: req.query.searchQuery,
         category: req.query.category,
@@ -77,14 +77,15 @@ router.get('/search', function (req, res, next) {
     };
 
     let searchQuery;
-    let today = new Date().toISOString();
+    let todayDate = new Date();
+    todayDate.setDate(todayDate.getDate() - 1);
+    let today = todayDate.toISOString();
 
     searchQuery = {
         $and: [
             {'preferred_date': {$gte: today}},
             {'category': {$regex: searchParams.category, $options: 'i'}},
             {'hourly_rate': {$gte: searchParams.minFees}},
-
             {
                 $or: [{
                     'title': {
@@ -92,14 +93,17 @@ router.get('/search', function (req, res, next) {
                         $options: 'i'
                     }
                 }, {'description': {$regex: searchParams.searchQuery, $options: 'i'}}]
-            }
+            },
+            {'status': 'pending'},
+            {'posted_by._id': {$ne: req.params.id}},
+            {'applied_by': {$not: {$elemMatch: {'_id': req.params.id}}}}
+
         ]
     };
 
     if (searchParams.location !== '') {
         fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${searchParams.location}&key=AIzaSyA4HC3r8pJPemOT8ExqkdgSXHFdIAf19JM`).then(response => response.json()).then(data => {
             if (data.status === 'OK') {
-                // req.db.jobs.createIndex({'location.coords': '2d'});
                 searchQuery = {
                     $and: [
                         {'preferred_date': {$gte: today}},
@@ -122,7 +126,10 @@ router.get('/search', function (req, res, next) {
                                     $options: 'i'
                                 }
                             }, {'description': {$regex: searchParams.searchQuery, $options: 'i'}}]
-                        }
+                        },
+                        {'status': 'pending'},
+                        {'posted_by._id': {$ne: req.params.id}},
+                        {'applied_by': {$not: {$elemMatch: {'_id': req.params.id}}}}
                     ]
                 }
             }
@@ -169,17 +176,24 @@ router.post('/apply', function (req, res, next) {
 
         }
         else {
-
+            res.json({
+                status: "User not found"
+            })
         }
     });
 
 
 });
 
-router.get('/list', function (req, res, next) {
-    let today = new Date().toISOString();
+router.get('/list/:id', function (req, res, next) {
+    let todayDate = new Date();
+    todayDate.setDate(todayDate.getDate() - 1);
+    let today = todayDate.toISOString();
     req.db.jobs.find({
-        'preferred_date': {$gte: today}
+        'preferred_date': {$gte: today},
+        'status': 'pending',
+        'posted_by._id': {$ne: req.params.id},
+        'applied_by': {$not: {$elemMatch: {'_id': req.params.id}}}
     }).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
         if (err) {
             res.json({
@@ -194,6 +208,7 @@ router.get('/list', function (req, res, next) {
         }
     });
 });
+<<<<<<< HEAD
 
 
 router.get('/list/postedjobs/:id', function (req, res, next) {
@@ -202,19 +217,38 @@ router.get('/list/postedjobs/:id', function (req, res, next) {
         'posted_by._id': req.params.id,
         'preferred_date': {$gte: today}
     }).sort({preferred_date: 1}).limit(10).toArray(function (err, data) {
+=======
+router.post('/comment', function (req, res, next) {
+    let db = req.db;
+    let job = req.body.jobId;
+    let employeeId = req.body.uId;
+    req.db.users.findOne({ _id: employeeId }, function (err, userData) {
+>>>>>>> 273fe1d8d52e95f5178b87269bc1eb20ab747409
         if (err) {
             res.json({
-                status: 'failed',
-                message: 'Oops, something went wrong!'
-            });
-        } else {
-            res.json({
-                status: 'success',
-                jobs: data
-            });
+                status: "OOPsss Something went wrong!!!"
+            })
+        }
+        for (let dd of userData.jobs_posted) {
+            if (dd.job_id == job) {
+                dd.job_id.feedback = req.body.feedback;
+                dd.job_id.rating = req.body.rating;
+                db.users.save(userData);
+                res.json({
+                    status: "Done",
+                    data: dd.job_id.feedback,
+                    rating: dd.rating.rating
+                })
+            }
+            else {
+                res.json({
+                    status: "No Comment possible"
+                })
+            }
         }
 
     });
-});
+
+})
 
 module.exports = router;
