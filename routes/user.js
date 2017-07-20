@@ -24,10 +24,46 @@ router.get('/profile/posted-jobs/:id', function (req, res, next) {
 
 });
 
+router.get('/profile/posted-jobs/jobs/:id', function (req, res, next) {
+    req.db.jobs.findOne({
+        '_id': req.params.id
+    },function (err, data) {
+        if (err) {
+            res.json({
+                status: 'failed',
+                message: 'Oops, something went wrong!'
+            });
+        } else {
+            res.json({
+                status: 'success',
+                jobs: data
+            });
+        }
+    });
+});
+
 router.get('/profile/applied-jobs/:id', function (req, res, next) {
     let id = req.params.id;
 
     req.db.users.findOne({_id:id},{jobs_applied:1},function (err, data) {
+        if (err) {
+            res.json({
+                status: 'failed',
+                message: 'Oops, something went wrong!'
+            });
+        } else {
+            res.json({
+                status: 'success',
+                jobs: data
+            });
+        }
+    });
+});
+
+router.get('/profile/applied-jobs/jobs/:id', function (req, res, next) {
+    req.db.jobs.findOne({
+        '_id': req.params.id
+    },function (err, data) {
         if (err) {
             res.json({
                 status: 'failed',
