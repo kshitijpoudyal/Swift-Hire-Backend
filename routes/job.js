@@ -230,15 +230,12 @@ router.post('/comment', function (req, res, next) {
                     data: userData.jobs_posted[dd].feedback,
                     rating: userData.jobs_posted[dd].rating
                 })
-                break;
-            }
-            else {
-                res.json({
-                    status: "No Comment possible",
-                    data: userData.jobs_posted[dd]
-                })
             }
         }
+        // res.json({
+        //     status: "error",
+        //     data: "not posted"
+        // })
 
     });
 
